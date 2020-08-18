@@ -60,6 +60,12 @@ func NewGR(cnf *config.Config, addrs []string, db int) iface.Backend {
 		}
 	}
 
+	if os.Getenv("MIN_IDLE_CONN") != "" {
+		if v, err := strconv.Atoi(os.Getenv("MIN_IDLE_CONN")); err != nil {
+			ropt.MinIdleConns = v
+		}
+	}
+
 	b.rclient = redis.NewUniversalClient(ropt)
 	return b
 }
