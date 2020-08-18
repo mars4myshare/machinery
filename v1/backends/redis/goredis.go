@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -50,6 +51,12 @@ func NewGR(cnf *config.Config, addrs []string, db int) iface.Backend {
 	}
 	if cnf.Redis != nil {
 		ropt.MasterName = cnf.Redis.MasterName
+	}
+
+	if os.GetEnv("POOL_SIZE") != "" {
+		if v, ok := strconv.Atoi(os.GetEnv("POOL_SIZE")); ok {
+			ropt.PoolSize = v
+		}
 	}
 
 	b.rclient = redis.NewUniversalClient(ropt)
